@@ -36,3 +36,40 @@ having multiple groupings in front of me feels better because of the
 reusability of that command for other values
 
 I still have to work with mutate() select() and ggplot() more
+
+
+
+
+
+
+tidyverse - a collection of packages for data analysis
+
+tibble - data frames
+
+tidyverse - tidy data - atomic values, one obervation per row, 
+  one feature per column
+  
+tidyverse code structure:
+operation, pass the result, operation
+
+here's an example:
+
+mpg %>%
+  filter(year == 2008) %>%
+  group_by(class) %>%
+  summarise(avg_hwy = mean(hwy))
+
+the %>% part is passing the result
+
+→ keep only rows where year is 2008
+→ group the remaining rows by class
+→ calculate average highway mileage for each class
+
+
+summarise() takes many rows and turns them into
+fewer rows by calculating summary values.
+
+
+mutate() - feature engineering
+
+

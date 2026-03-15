@@ -152,3 +152,46 @@ mpg_new %>%
     avg_hwy = mean(hwy),
     count = n()
   )
+
+
+class(mpg_new$manufacturer)
+
+str(mpg_new$manufacturer)
+
+unique(mpg_new$manufacturer)
+
+head(mpg_new)
+
+mpg_new %>%
+  filter(year < 2000) %>%
+  group_by(year, manufacturer) %>%
+  summarise(avg_cty = mean(cty))
+
+'
+So group_by(year, manufacturer) creates groups like:
+
+all Audi cars from 1999
+
+all Audi cars from 2008
+
+all Ford cars from 1999
+
+all Ford cars from 2008
+'
+
+
+
+head(mpg_new)
+
+mpg_new_2 <- mpg_new %>%
+  mutate(avg_per_cyl = avg_mileage / cyl)
+
+
+names(mpg_new_2)
+
+mean(mpg_new_2$avg_per_cyl)
+
+
+mpg_new %>%
+  select(manufacturer, class, year, cty, hwy) %>%
+  filter(year == 2008) 
