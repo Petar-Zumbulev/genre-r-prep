@@ -141,3 +141,7 @@ glimpse(mpg_new)
 mpg_new %>%
   select(manufacturer, year, efficiency_score)
 
+'
+if_else() only for binary conditions
+case_when() for several conditions
+'
