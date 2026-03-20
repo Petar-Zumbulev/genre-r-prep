@@ -103,3 +103,17 @@ The most important shift today was understanding that plotting is not just about
 
 ## What I want to remember
 Good analysis is not just making a chart. It is choosing the right chart for the business question and explaining what it means clearly.
+
+
+## ggplot helpers to remember
+
+- reorder(category, value) sorts category labels based on a numeric variable.
+- coord_flip() flips the chart so bar charts become horizontal.
+- This is useful when category names are long or when I want a ranked chart to be easier to read.
+
+## Interpretation reminder
+
+A chart interpretation should explain:
+1. what pattern I see
+2. in what direction it goes
+3. why it matters
