@@ -302,4 +302,22 @@ readr::write_csv(quarterly_report, "02_r_drills/day_05_quarterly_report.csv")
 readr::write_csv(region_report, "02_r_drills/day_05_region_report.csv")
 
 
+# -------------------------------------------
+#
+# Line and Region Report
+#
+# - grouped report by line and region
+#
+# -------------------------------------------
+line_region_report <- report_tbl %>%
+  group_by(line, region) %>%
+  summarise(
+    total_premium = sum(premium),
+    total_claim_amount = sum(total_claim_amount),
+    claim_count = sum(claim_count),
+    avg_severity = ifelse(sum(claim_count) > 0, sum(total_claim_amount) / sum(claim_count), 0),
+    loss_ratio = sum(total_claim_amount) / sum(premium),
+    .groups = "drop"
+  )
 
+print(line_region_report)

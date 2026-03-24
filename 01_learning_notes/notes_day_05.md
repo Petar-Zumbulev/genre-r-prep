@@ -153,6 +153,10 @@ also use joins because one table doesnt have all the information
 - why left_join is useful
 
 
+## Line-Region Report
 
+Which line-region combination looks worst?
+
+Property - West looks worst because it has the highest loss ratio and avg. severity
 
 
