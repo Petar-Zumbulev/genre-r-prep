@@ -156,60 +156,90 @@ reporting/tool-building workflow
 
 Real-world analyst code:
 
-cleaner
-reusable
-easier to explain in an interview
-exportable to Excel
+cleaner reusable easier to explain in an interview exportable to Excel
 
 which for us means:
 
-turn your reporting logic into functions
-create a reusable segment summary function
-create reusable plotting functions
-export the outputs to Excel
-
+turn your reporting logic into functions create a reusable segment
+summary function create reusable plotting functions export the outputs
+to Excel
 
 3 big reasons to use a function:
 
-reuse
-cleaner code
-same logic every time
+reuse cleaner code same logic every time
 
 And that third one is very important in analyst/reporting work
-
-
 
 ## Day 5 Part 2
 
 ### New concepts
-- functions make code reusable
-- one function can summarise different report views
-- group_by(across(all_of(...))) allows dynamic grouping
-- .data[[...]] allows dynamic plotting
-- openxlsx can export multiple report tables into one Excel workbook
+
+-   functions make code reusable
+-   one function can summarise different report views
+-   group_by(across(all_of(...))) allows dynamic grouping
+-   .data[[...]] allows dynamic plotting
+-   openxlsx can export multiple report tables into one Excel workbook
 
 ### Why this matters
-- this feels more like real analyst code than one long script
-- reusable code is easier to explain in interviews
-- reusable report functions are useful for quarterly reporting
-- Excel export makes the workflow more practical for business users
+
+-   this feels more like real analyst code than one long script
+-   reusable code is easier to explain in interviews
+-   reusable report functions are useful for quarterly reporting
+-   Excel export makes the workflow more practical for business users
 
 ### What I should be able to explain
-- why functions are better than repeating code
-- how dynamic grouping works
-- how I can create one summary function for different business cuts
-- why Excel export is relevant in insurance/reporting workflows
 
+-   why functions are better than repeating code
+-   how dynamic grouping works
+-   how I can create one summary function for different business cuts
+-   why Excel export is relevant in insurance/reporting workflows
 
+## Refactor:
 
+change the structure of the code to make it better, without changing
+what the code is supposed to do
 
+## Before refactoring
 
+You might have one long script with repeated code.
 
+## After refactoring
 
+You turn repeated parts into functions, clean up names, and organize it
+better.
 
+But the final result is still the same kind of report.
 
+## Normal/fixed grouping
 
+group_by(year_quarter, line)
 
+## Dynamic grouping
 
+group_by within a function
 
+you do not hard-code the grouping columns directly inside the function
+you pass them in as an input
 
+Without dynamic grouping, you would need separate code like:
+
+one summary for line one summary for region one summary for product one
+summary for country
+
+With dynamic grouping, you write one summary function and only change
+the input.
+
+So dynamic grouping = flexible grouping.
+
+## Dynamic plotting
+
+you do not hard-code the plotted columns directly.
+
+Instead, you pass in:
+
+which column should be the y-axis which column should define the colored
+groups
+
+So the same plotting function can create:
+
+loss ratio by line severity by line loss ratio by region
