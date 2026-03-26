@@ -168,9 +168,6 @@ Useful checks:
 
 \`\`\`r names(report_tbl) glimpse(report_tbl) head(report_tbl, 10)
 
-
-
-
 ## Day 5 was:
 
 “Run script → create one report”
@@ -179,45 +176,27 @@ Useful checks:
 
 “User chooses filters → app updates the same report logic automatically”
 
-
-
-
 # Understanding Shiny
 
 ## The 4 key ideas
 
 ## 1. ui
 
-This is the front end.
-It is what the user sees:
+This is the front end. It is what the user sees:
 
-dropdowns
-sliders
-tables
-plots
-titles
-
+dropdowns sliders tables plots titles
 
 ## 2. server
 
-This is the logic layer.
-It does the work:
+This is the logic layer. It does the work:
 
-filter data
-calculate metrics
-create tables
-create plots
-
+filter data calculate metrics create tables create plots
 
 ## 3. input
 
-This is what the user selects.
-Example:
+This is what the user selects. Example:
 
-chosen line
-chosen region
-chosen quarter
-
+chosen line chosen region chosen quarter
 
 ## 4. reactive
 
@@ -227,17 +206,11 @@ It means:
 
 “When the input changes, rerun the dependent calculation.”
 
-So instead of you manually changing code and rerunning the script, the app 
-does that for the user.
+So instead of you manually changing code and rerunning the script, the app does that for the user.
 
-- maybe the "dynamic" part
+-   maybe the "dynamic" part
 
-
-
-Day 5: I was the one changing the filters in code
-Day 6: the user changes the filters in the app
-
-
+Day 5: I was the one changing the filters in code Day 6: the user changes the filters in the app
 
 ## Prepare dashboard-ready data
 
@@ -247,30 +220,18 @@ Do not throw messy raw data directly into Shiny
 
 A good dashboard usually sits on top of a table that is already:
 
-clean
-consistent
-grouped at the right level
-ready for filtering
-
-
+clean consistent grouped at the right level ready for filtering
 
 For insurance metrics, granularity matters a lot.
 
 Example:
 
-If premium is repeated on every claim row, and then you sum premium in the app,
-you may accidentally double count premium.
+If premium is repeated on every claim row, and then you sum premium in the app, you may accidentally double count premium.
 
 That would make your loss ratio wrong.
 
 So before Shiny, you want a clean table at the right level, such as:
 
-one row per quarter-line-region
-or
-one row per policy-quarter
+one row per quarter-line-region or one row per policy-quarter
 
-^^ that's the granularity part
-
-
-
-
+\^\^ that's the granularity part
