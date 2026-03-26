@@ -235,3 +235,301 @@ So before Shiny, you want a clean table at the right level, such as:
 one row per quarter-line-region or one row per policy-quarter
 
 \^\^ that's the granularity part
+
+
+
+
+
+
+
+## Explaining 'one row per quarter, line, region" from dashboard_metrics_prep.R
+
+
+> each row represents one **unique combination** of:
+- a quarter
+- a business line
+- a region
+
+So instead of many detailed rows like:
+
+- Policy P001, 2023-Q1, Property, South
+- Policy P002, 2023-Q1, Property, South
+- Policy P003, 2023-Q1, Property, South
+
+you combine them into **one single summary row**:
+
+- 2023-Q1, Property, South
+
+And that one row contains the totals and ratios for that whole group.
+
+---
+
+## Simple example
+
+Imagine `report_tbl` has 3 rows:
+
+| policy_id | year_quarter | line | region | premium | claim_count | total_claim_amount |
+|---|---|---|---|---:|---:|---:|
+| P001 | 2023-Q1 | Property | South | 1000 | 1 | 500 |
+| P002 | 2023-Q1 | Property | South | 2000 | 2 | 1200 |
+| P003 | 2023-Q1 | Property | South | 1500 | 0 | 0 |
+
+After rolling up, you get **one row**:
+
+| quarter | line | region | total_premium | claim_count | total_claim_amount |
+|---|---|---|---:|---:|---:|
+| 2023-Q1 | Property | South | 4500 | 3 | 1700 |
+
+Then you calculate:
+
+- `avg_severity = 1700 / 3`
+- `loss_ratio = 1700 / 4500`
+
+---
+
+# Why do we do this business-wise?
+
+Because dashboards are usually meant to answer **management-level questions**, not policy-level detail questions.
+
+A manager usually asks things like:
+
+- How is **Property in South** doing this quarter?
+- Which region has the highest loss ratio?
+- Did severity worsen from Q1 to Q4?
+- Where do we have claims pressure building up?
+
+They usually do **not** ask:
+
+- What happened on policy P001 specifically?
+
+That second question is more detailed investigation.  
+The first type is **dashboard reporting**.
+
+So rolling up is really about matching the data structure to the business question.
+
+---
+
+# Why do we need aggregation?
+
+## 1. To reduce noise
+
+Detailed data has too much detail for a dashboard.
+
+If you show hundreds of policy rows, it becomes hard to see patterns.
+
+But if you group them into:
+
+- quarter
+- line
+- region
+
+you can immediately compare business segments.
+
+So aggregation helps you see the **signal instead of the noise**.
+
+---
+
+## 2. To match how businesses think
+
+Insurance businesses often monitor performance by segments like:
+
+- time period
+- line of business
+- geography
+
+Why?
+
+Because those are common decision-making dimensions.
+
+For example:
+
+- **Quarter** tells you trend over time
+- **Line** tells you which insurance business is stronger or weaker
+- **Region** tells you where experience is better or worse
+
+So these dimensions are not random.  
+They are business reporting dimensions.
+
+---
+
+## 3. To create meaningful KPIs
+
+Metrics like:
+
+- claim count
+- total claim amount
+- premium
+- severity
+- loss ratio
+
+become more useful when computed for a business segment.
+
+For example:
+
+A single policy’s loss ratio is often too noisy.
+
+But the loss ratio for:
+
+- Motor, North, 2023-Q2
+
+is much more analytically useful.
+
+Why?
+
+Because it reflects the performance of a broader portfolio slice.
+
+---
+
+## 4. To make filtering easy in Shiny
+
+Shiny works best when the data is already prepared at the level you want to analyze.
+
+If the user chooses:
+
+- line = Property
+- region = South
+
+then the app can quickly show the relevant quarter rows.
+
+That is much easier if the table is already rolled up to that level.
+
+So the rolled-up table is really the **correct dashboard grain**.
+
+---
+
+# What does “grain” mean here?
+
+“Grain” means the level of detail of a row.
+
+For example:
+
+- policy-level grain = one row per policy-quarter
+- dashboard grain = one row per quarter-line-region
+
+So when we changed from `report_tbl` to `dashboard_metrics`, we changed the grain.
+
+That is one of the most important ideas in analytics.
+
+---
+
+# Why not just use the detailed table directly?
+
+You could, but it is usually worse for dashboarding.
+
+## Problems with using detailed rows directly:
+
+- harder to read
+- harder to compare groups
+- slower to plot and filter
+- higher chance of calculation mistakes
+- harder to explain business performance clearly
+
+So instead, you pre-aggregate.
+
+That gives you a cleaner and more trustworthy dashboard base.
+
+---
+
+# Why those three dimensions specifically?
+
+Because each one answers a different business question.
+
+## Quarter
+
+Shows time trend.
+
+Business question:
+
+- Are we improving or worsening over time?
+
+## Line
+
+Shows portfolio type.
+
+Business question:
+
+- Which insurance product area is performing poorly?
+
+## Region
+
+Shows geographic difference.
+
+Business question:
+
+- Is one market or region driving bad results?
+
+When you combine them, you can ask:
+
+- How did **Motor in West** perform in **2023-Q3**?
+
+That is a very realistic insurance reporting question.
+
+---
+
+# Why do we recalculate severity and loss ratio after grouping?
+
+Because ratios usually should be recalculated from the totals.
+
+For example:
+
+## Severity
+
+Not:
+
+- average of averages
+
+But:
+
+- total claim amount / total claim count
+
+## Loss ratio
+
+Not:
+
+- average of row-level loss ratios
+
+But:
+
+- total claim amount / total premium
+
+That is analytically important because it keeps the group metric weighted correctly.
+
+---
+
+# The deeper analytical idea
+
+What we are really doing is this:
+
+> We are choosing the correct level at which the business should be analyzed.
+
+That is one of the most important analyst skills.
+
+Not just:
+
+- “Can I code a plot?”
+
+But:
+
+- “At what level should I summarize the data so the metric is meaningful?”
+
+That is real analytical thinking.
+
+---
+
+# Best simple summary
+
+By rolling up to one row per:
+
+- quarter
+- line
+- region
+
+we are turning detailed operational data into **management-level performance data**.
+
+That gives us:
+
+- clearer trends
+- better comparisons
+- more meaningful KPIs
+- easier Shiny filtering
+- a dashboard that reflects how the business actually thinks
