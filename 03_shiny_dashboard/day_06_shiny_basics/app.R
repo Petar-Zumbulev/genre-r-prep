@@ -86,7 +86,19 @@ total premium
 overall loss ratio
 '
 server <- function(input, output) {
-  
+
+# --------------------------------
+#
+# reactive() is one of the most important concepts
+#
+# - Create a calculation that Shiny will automatically rerun when 
+# the inputs it depends on change
+# 
+# 'auto re-run' calculations - thats why we have if-statement logic
+# 
+# reporting workflow and apps need this automatic re-calculating
+#
+# --------------------------------
   filtered_metrics <- reactive({
     df <- dashboard_metrics
     

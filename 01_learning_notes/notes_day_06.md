@@ -988,3 +988,17 @@ Main functions we used: - `percent()` - `accuracy = 0.1`
 -   `dplyr` prepares the data\
 -   `ggplot2` makes the charts\
 -   `scales` formats the numbers nicely
+
+
+
+# Day 6 notes
+
+- Shiny has two main parts: ui and server.
+- ui is what the user sees.
+- server is where the calculations happen.
+- input stores user choices.
+- reactive means calculations rerun automatically when inputs change.
+- A dashboard should not start from messy raw data if possible.
+- Granularity matters, especially for premium and loss ratio.
+- A good pattern is to create one filtered reactive dataset and reuse it for multiple outputs.
+- Day 5 reporting logic can become Day 6 Shiny logic by replacing hard-coded filters with user inputs.
