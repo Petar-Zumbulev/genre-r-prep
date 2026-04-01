@@ -2,7 +2,8 @@ library(shiny)
 library(dplyr)
 library(ggplot2)
 library(scales)
-
+# with source, we run another script "dashboard_metrics_prep.R" in this script 
+# so that we have the table for the server
 source("03_shiny_dashboard/day_06_shiny_basics/dashboard_metrics_prep.R")
 
 ui <- fluidPage(
@@ -22,6 +23,13 @@ ui <- fluidPage(
         label = "Select region",
         choices = c("All", sort(unique(dashboard_metrics$region))),
         selected = "All"
+      ),
+      
+      selectInput(
+        inputId = "quarter",
+        label = "Select quarter",
+        choices = c("All", sort(unique(dashboard_metrics$quarter))),
+        selected = "All"
       )
     ),
     
@@ -40,7 +48,37 @@ ui <- fluidPage(
     )
   )
 )
+'
+The server has 2 very important reactive objects.
 
+filtered_metrics
+
+This is your filtered dataset.
+
+It says:
+
+start from dashboard_metrics
+if the user selected a line, filter to that
+if the user selected a region, filter to that
+
+This is the core reactive dataset.
+
+This is very important because all outputs use the same filtered base.
+
+That is good dashboard design.
+
+overall_metrics
+
+This creates one high-level summary from the filtered data.
+
+So after filtering, it calculates:
+
+total claims
+total claim amount
+average severity
+total premium
+overall loss ratio
+'
 server <- function(input, output) {
   
   filtered_metrics <- reactive({
@@ -54,7 +92,32 @@ server <- function(input, output) {
       df <- df %>% filter(region == input$region)
     }
     
+    if (input$quarter != "All") {
+      df <- df %>% filter(quarter == input$quarter)
+    }
+    
     df
+  })
+  
+  quarter_summary <- reactive({
+    filtered_metrics() %>%
+      group_by(quarter) %>%
+      summarise(
+        claim_count = sum(claim_count, na.rm = TRUE),
+        total_claim_amount = sum(total_claim_amount, na.rm = TRUE),
+        total_premium = sum(total_premium, na.rm = TRUE),
+        avg_severity = if_else(
+          claim_count > 0,
+          total_claim_amount / claim_count,
+          0
+        ),
+        loss_ratio = if_else(
+          total_premium > 0,
+          total_claim_amount / total_premium,
+          NA_real_
+        ),
+        .groups = "drop"
+      )
   })
   
   overall_metrics <- reactive({
@@ -120,3 +183,45 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
+
+'
+Shiny is not “new analytics”
+
+It is mostly:
+
+analytics you already know, wrapped in user inputs and reactive logic
+'
+
+'
+Good dashboards start before Shiny
+
+The real work is often:
+
+choosing the correct granularity
+preparing the data cleanly
+defining the right KPIs
+
+The app is only the front end of that logic.
+'
+
+'
+One filtered dataset should drive many outputs
+
+This is one of the best habits you can build early.
+
+Instead of repeating filtering logic separately in every output, use one:
+
+filtered_metrics <- reactive({ ... })
+
+Then reuse it.
+
+That makes the app:
+
+cleaner
+easier to debug
+easier to extend tomorrow
+'
+
+
+
+
