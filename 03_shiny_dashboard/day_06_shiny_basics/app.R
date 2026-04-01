@@ -37,6 +37,9 @@ ui <- fluidPage(
       h3("Overall selected view"),
       tableOutput("kpi_table"),
       
+      h3("Best and worst quarter"),
+      tableOutput("quarter_extremes"),
+      
       h3("Quarterly summary"),
       tableOutput("summary_table"),
       
@@ -44,7 +47,10 @@ ui <- fluidPage(
       plotOutput("severity_plot"),
       
       h3("Loss ratio by quarter"),
-      plotOutput("loss_ratio_plot")
+      plotOutput("loss_ratio_plot"),
+      
+      h3("Total claim amount by quarter"),
+      plotOutput("total_claim_plot")
     )
   )
 )
@@ -149,14 +155,27 @@ server <- function(input, output) {
       )
   })
   
+# Business meaning for output$summary_table <- renderTable:
+  
+#  the riskiest / worst-performing quarter comes first
+#  that is often exactly what a business user wants to see first
+  
   output$summary_table <- renderTable({
-    filtered_metrics() %>%
-      arrange(quarter)
+    quarter_summary() %>%
+      arrange(desc(loss_ratio), quarter) %>%
+      mutate(
+        total_claim_amount = round(total_claim_amount, 2),
+        avg_severity = round(avg_severity, 2),
+        total_premium = round(total_premium, 2),
+        loss_ratio = percent(loss_ratio, accuracy = 0.1)
+      )
   })
   
   output$severity_plot <- renderPlot({
-    ggplot(filtered_metrics(),
-           aes(x = quarter, y = avg_severity, group = 1)) +
+    ggplot(
+      quarter_summary(),
+      aes(x = quarter, y = avg_severity, group = 1)
+    ) +
       geom_line() +
       geom_point() +
       labs(
@@ -168,8 +187,10 @@ server <- function(input, output) {
   })
   
   output$loss_ratio_plot <- renderPlot({
-    ggplot(filtered_metrics(),
-           aes(x = quarter, y = loss_ratio, group = 1)) +
+    ggplot(
+      quarter_summary(),
+      aes(x = quarter, y = loss_ratio, group = 1)
+    ) +
       geom_line() +
       geom_point() +
       scale_y_continuous(labels = percent) +
@@ -180,6 +201,50 @@ server <- function(input, output) {
       ) +
       theme_minimal()
   })
+  
+  output$quarter_extremes <- renderTable({
+    qs <- quarter_summary() %>%
+      filter(!is.na(loss_ratio))
+    
+    if (nrow(qs) == 0) {
+      return(tibble(
+        metric = "No valid loss ratio data",
+        quarter = NA_character_,
+        loss_ratio = NA_character_
+      ))
+    }
+    
+    best_row <- qs %>%
+      slice_min(order_by = loss_ratio, n = 1, with_ties = FALSE)
+    
+    worst_row <- qs %>%
+      slice_max(order_by = loss_ratio, n = 1, with_ties = FALSE)
+    
+    tibble(
+      metric = c("Best quarter", "Worst quarter"),
+      quarter = c(best_row$quarter, worst_row$quarter),
+      loss_ratio = percent(
+        c(best_row$loss_ratio, worst_row$loss_ratio),
+        accuracy = 0.1
+      )
+    )
+  })
+  
+  output$total_claim_plot <- renderPlot({
+    ggplot(
+      quarter_summary(),
+      aes(x = quarter, y = total_claim_amount, group = 1)
+    ) +
+      geom_line() +
+      geom_point() +
+      labs(
+        x = "Quarter",
+        y = "Total claim amount",
+        title = "Total claim amount trend"
+      ) +
+      theme_minimal()
+  })
+  
 }
 
 shinyApp(ui = ui, server = server)
