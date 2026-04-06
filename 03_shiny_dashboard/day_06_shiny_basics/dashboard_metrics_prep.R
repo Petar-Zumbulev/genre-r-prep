@@ -124,5 +124,56 @@ So rolling up is really about matching the data structure to the business questi
 '
 
 
+# ---------------------------------
+#
+# An .rds file is an R data file that stores one R object 
+# exactly as it currently exists
+#
+# We need an RDS file .rds because when we run this script it
+# will save the R object 'dashboard_metrics' which is the 
+# starting point dashboard for shiny, and we need that in our app.R 
+# for day 07
+#
+# R paths are based on the current working directory, not on where 
+# the script file lives, thats why as long as my current working 
+# directory for R is the root of the project, I can just use the 
+# directory below to save my .rds file
+
+saveRDS(
+  dashboard_metrics,
+  "03_shiny_dashboard/day_07_dashboard/data/dashboard_metrics.rds"
+)
+
+
+'
+dashboard_metrics = the object in your current R session
+dashboard_metrics.rds = that same object saved to disk
+'
+
+'
+You do not need .rds because Shiny requires it.
+
+You use it because it is a clean way to separate data preparation from the app.
+'
+
+'
+Without .rds
+
+Your app would have to:
+
+read raw files
+clean them
+join tables
+build summaries
+create dashboard_metrics
+
+every time the app starts.
+
+That is messy and slower.
+
+With .rds
+
+You do the prep once, save the finished table, and then your app just loads the ready-made object.
+'
 
 
