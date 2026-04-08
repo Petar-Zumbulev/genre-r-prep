@@ -4,7 +4,7 @@ library(ggplot2)
 library(DT)
 library(scales)
 
-app_data <- readRDS("data/dashboard_metrics.rds")
+app_data <- readRDS("03_shiny_dashboard/day_07_dashboard/data/dashboard_metrics.rds")
 
 ui <- fluidPage(
   titlePanel("Insurance Dashboard"),
@@ -13,7 +13,7 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput(
         inputId = "line",
-        label = "Line",
+        label = "Business Line",
         choices = c("All", sort(unique(app_data$line))),
         selected = "All"
       ),
@@ -27,7 +27,7 @@ ui <- fluidPage(
       
       selectInput(
         inputId = "quarter",
-        label = "Quarter",
+        label = "Reporting Quarter",
         choices = c("All", sort(unique(app_data$quarter))),
         selected = "All"
       )
@@ -207,3 +207,28 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui = ui, server = server)
+
+'
+Analysis structure for dashboards:
+
+Filter layer
+
+User picks the business slice they want.
+
+KPI layer
+
+You collapse filtered data into high-level metrics.
+
+Trend layer
+
+You show how one important metric changes over time.
+
+Detail layer
+
+You let the user inspect the numbers behind the summary.
+
+Reporting logic
+'
+
+
+# Dashboard: structuring business logic, levels, layers, kpis, trends

@@ -18,6 +18,8 @@ rstudio "name.R/name.md"
 
 clear
 
+find . -maxdepth 3 -not -path "./.git*" | sed 's|^\./||' | sort
+
 
 
 
