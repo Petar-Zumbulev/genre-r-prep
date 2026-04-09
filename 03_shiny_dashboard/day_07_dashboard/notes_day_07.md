@@ -30,3 +30,65 @@ A dashboard should answer:
 
 ## Why this matters for the role
 This matches R reporting + Shiny + insurance metric workflows.
+
+
+
+# Shiny dashboard mental model
+
+## The whole app logic in one flow
+
+1. **Load data**
+   - Start with the base dataset.
+   - Example:
+     app_data
+
+2. **Read user choices**
+   - The app checks what the user selected in the filters.
+   - Examples:
+     input$line
+     input$region
+     input$quarter
+
+3. **Build filtered data**
+   - Use the user choices to keep only the relevant rows.
+   - Example:
+     filtered_data()
+   - This is the current working dataset for the app.
+
+4. **Build summary layers**
+   - From the filtered data, create the different business views:
+   - `kpi_data()` = top summary numbers
+   - `trend_data()` = trend over time
+   - `detail_data()` = detailed table
+
+5. **Send results to the screen**
+   - Display the results in the UI.
+   - Examples:
+     renderText()
+     renderPlot()
+     renderDT()
+
+## One-line memory trick
+
+**Load data -> read inputs -> filter data -> calculate summaries -> display outputs**
+
+## What each part means in simple words
+
+- `app_data` = the full starting dataset
+- `input$...` = what the user wants to see
+- `filtered_data()` = the rows that match the user’s choice
+- `kpi_data()`, `trend_data()`, `detail_data()` = the business results built from the filtered rows
+- `render...()` = the functions that show those results on the screen
+
+## Big idea
+
+A Shiny app is not random code.
+
+It is a pipeline:
+
+- start with data
+- react to user choices
+- recalculate the right summaries
+- show them clearly
+
+That is the core dashboard logic.

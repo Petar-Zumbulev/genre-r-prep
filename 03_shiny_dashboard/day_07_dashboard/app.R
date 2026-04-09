@@ -4,6 +4,73 @@ library(ggplot2)
 library(DT)
 library(scales)
 
+# -----------------
+# The big picture: what the app does
+# load data → let user filter it → recompute summaries → show results
+# 
+# app_data is the starting table, the base data table the app uses
+# this is a clean, prepared dataset
+#
+# separate data prep from dashboard display
+#
+# the ui is the layout
+# this is what the user sees
+# title, filters, tabs
+# the front end
+#
+# the server is the brain, where the logic happens:
+# what to do when filters change
+# how to calculate the KPIs
+# how to build the plot data
+# how to build the table data
+#
+# ui = what the user sees
+# server = what the app thinks and calculates
+#
+# reactive:
+# a reactive object updates automatically when
+# a user changes input
+# filtered_data() changes automatically when
+# a user chooses a specific Business Line or Region, etc
+#
+# so filtered_data <- reactive({
+# means build me a filtered dataset that gets automatically updated
+# this is the engine of the app
+#
+# Good dashboard design:
+# 1 dataset feeds/creates many outputs thanks to reactive logic
+#
+# From the same filtered data, you create:
+# kpi_data()
+# trend_data()
+# detail_data()
+#
+# filtered_data()  What rows are currently relevant based on the user’s filters?
+#
+# kpi_data() What are the big top-level numbers right now? (total claims, total claim amount, severity, loss ratio)
+#
+# trend_data() How is something changing over time? Usually grouped by quarter
+#
+# renderText() puts a text result into the UI
+#
+# renderPlot() takes processed data and turns it into a ggplot
+#
+# renderDT() Used for the interactive table, useful because business users often want both: summary view and inspectable table
+#
+# things like input#line, input$region, etc. represent what the user selected
+# input$... is how the server knows what the user wants to look at
+# this is how the app becomes interactive
+#
+# -----------------
+'
+Why validate(need()) is useful
+
+This protects the app when filters return no data.
+
+Instead of crashing or showing a weird error, it shows a clean message.
+
+That is small, but very good practice.
+'
 app_data <- readRDS("03_shiny_dashboard/day_07_dashboard/data/dashboard_metrics.rds")
 
 ui <- fluidPage(
