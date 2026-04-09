@@ -69,11 +69,11 @@ ui <- fluidPage(
       
       tabsetPanel(
         tabPanel(
-          "Trend Plot",
+          "Severity Trend", # Severity Trend is a more specific tab name for this tab
           plotOutput("severity_trend_plot", height = "400px")
         ),
         tabPanel(
-          "Detail Table",
+          "Detailed Results",
           DTOutput("detail_table")
         )
       )
@@ -194,15 +194,46 @@ server <- function(input, output, session) {
       geom_line() +
       geom_point() +
       labs(
-        title = "Average Severity by Quarter",
-        x = "Quarter",
-        y = "Average Severity"
+        title = "Average Claim Cost by Quarter", # changed this from average severity by quarter because its more understandable, they mean the same thing
+        x = "Reporting Quarter",
+        y = "Average Cost per Claim"
       ) +
       theme_minimal()
   })
-  
+# -------------------------------------
+#
+# Here with output$detail_table... I am improving the formatting of the table
+# rounding, currency, percentages
+#
+# -------------------------------------
   output$detail_table <- renderDT({
-    datatable(detail_data())
+    detail_data() %>%
+      mutate(
+        `Total Claims Cost` = dollar(total_claim_amount),
+        Premium = dollar(total_premium),
+        `Avg Cost per Claim` = dollar(avg_severity),
+        `Loss Ratio` = percent(loss_ratio, accuracy = 0.1)
+      ) %>%
+      select(
+        line,
+        region,
+        quarter,
+        claim_count,
+        `Total Claims Cost`,
+        Premium,
+        `Avg Cost per Claim`,
+        `Loss Ratio`
+      ) %>%
+      rename(
+        `Business Line` = line,
+        Region = region,
+        `Reporting Quarter` = quarter,
+        Claims = claim_count
+      ) %>%
+      datatable(
+        options = list(pageLength = 8),
+        rownames = FALSE
+      )
   })
 }
 
