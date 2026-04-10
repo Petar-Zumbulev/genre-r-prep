@@ -71,7 +71,7 @@ Instead of crashing or showing a weird error, it shows a clean message.
 
 That is small, but very good practice.
 '
-app_data <- readRDS("03_shiny_dashboard/day_07_dashboard/data/dashboard_metrics.rds")
+app_data <- readRDS(file.path("data", "dashboard_metrics.rds"))
 
 ui <- fluidPage(
   titlePanel("Insurance Dashboard"),
@@ -138,6 +138,22 @@ ui <- fluidPage(
         tabPanel(
           "Severity Trend", # Severity Trend is a more specific tab name for this tab
           plotOutput("severity_trend_plot", height = "400px")
+        ),
+        tabPanel(
+          "Claim Count Trend",
+          plotOutput("claim_count_trend_plot", height = "400px")
+        ),
+        tabPanel(
+          "Claims Cost Trend",
+          plotOutput("claim_amount_trend_plot", height = "400px")
+        ),
+        tabPanel(
+          "Loss Ratio Trend",
+          plotOutput("loss_ratio_trend_plot", height = "400px")
+        ),
+        tabPanel(
+          "Premium Trend",
+          plotOutput("premium_trend_plot", height = "400px")
         ),
         tabPanel(
           "Detailed Results",
@@ -267,6 +283,76 @@ server <- function(input, output, session) {
       ) +
       theme_minimal()
   })
+  
+  output$claim_count_trend_plot <- renderPlot({
+    validate(
+      need(nrow(trend_data()) > 0, "No data available for this filter selection.")
+    )
+    
+    ggplot(trend_data(), aes(x = quarter, y = claim_count, group = 1)) +
+      geom_line() +
+      geom_point() +
+      scale_y_continuous(labels = comma) +
+      labs(
+        title = "Number of Claims by Quarter",
+        x = "Reporting Quarter",
+        y = "Claims"
+      ) +
+      theme_minimal()
+  })
+  
+  output$claim_amount_trend_plot <- renderPlot({
+    validate(
+      need(nrow(trend_data()) > 0, "No data available for this filter selection.")
+    )
+    
+    ggplot(trend_data(), aes(x = quarter, y = total_claim_amount, group = 1)) +
+      geom_line() +
+      geom_point() +
+      scale_y_continuous(labels = dollar) +
+      labs(
+        title = "Total Claims Cost by Quarter",
+        x = "Reporting Quarter",
+        y = "Total Claims Cost"
+      ) +
+      theme_minimal()
+  })
+  
+  output$loss_ratio_trend_plot <- renderPlot({
+    validate(
+      need(nrow(trend_data()) > 0, "No data available for this filter selection.")
+    )
+    
+    ggplot(trend_data(), aes(x = quarter, y = loss_ratio, group = 1)) +
+      geom_line() +
+      geom_point() +
+      scale_y_continuous(labels = percent) +
+      labs(
+        title = "Loss Ratio by Quarter",
+        x = "Reporting Quarter",
+        y = "Loss Ratio"
+      ) +
+      theme_minimal()
+  })
+  
+  output$premium_trend_plot <- renderPlot({
+    validate(
+      need(nrow(trend_data()) > 0, "No data available for this filter selection.")
+    )
+    
+    ggplot(trend_data(), aes(x = quarter, y = total_premium, group = 1)) +
+      geom_line() +
+      geom_point() +
+      scale_y_continuous(labels = dollar) +
+      labs(
+        title = "Premium by Quarter",
+        x = "Reporting Quarter",
+        y = "Premium"
+      ) +
+      theme_minimal()
+  })
+  
+  
 # -------------------------------------
 #
 # Here with output$detail_table... I am improving the formatting of the table
@@ -304,7 +390,7 @@ server <- function(input, output, session) {
   })
 }
 
-shinyApp(ui = ui, server = server)
+# shinyApp(ui = ui, server = server)
 
 '
 Analysis structure for dashboards:
@@ -330,3 +416,17 @@ Reporting logic
 
 
 # Dashboard: structuring business logic, levels, layers, kpis, trends
+
+# this last line is a function call
+# function call that creates and returns the Shiny app object
+# the app file must end by returning a Shiny app object
+# and thats what this function call does
+
+shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
