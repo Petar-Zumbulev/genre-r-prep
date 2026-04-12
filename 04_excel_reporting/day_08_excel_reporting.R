@@ -2,12 +2,14 @@ library(dplyr)
 library(openxlsx)
 
 # load the prepared dashboard data from the project-level data folder
+# assuming our current working directory is the main root folder
 dashboard_data <- readRDS(file.path("data", "dashboard_metrics.rds"))
 
 # ---------------------------
 # summary tables
 # ---------------------------
 
+# 1) Quarter summary
 quarter_summary <- dashboard_data %>%
   group_by(quarter) %>%
   summarise(
@@ -27,6 +29,7 @@ quarter_summary <- dashboard_data %>%
     .groups = "drop"
   )
 
+# 2) Line summary
 line_summary <- dashboard_data %>%
   group_by(line) %>%
   summarise(
@@ -46,6 +49,7 @@ line_summary <- dashboard_data %>%
     .groups = "drop"
   )
 
+# 3) Region Summary
 region_summary <- dashboard_data %>%
   group_by(region) %>%
   summarise(

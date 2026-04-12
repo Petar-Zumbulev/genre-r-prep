@@ -3,6 +3,8 @@ library(dplyr)
 library(ggplot2)
 library(DT)
 library(scales)
+library(openxlsx)
+
 
 # -----------------
 # The big picture: what the app does
@@ -158,7 +160,11 @@ ui <- fluidPage(
         tabPanel(
           "Detailed Results",
           DTOutput("detail_table")
-        )
+        ), # this comma is important because we're making multiple UI elements
+                                    # because the download button comes after
+        
+        # download button must be inside the UI, so before the final closing parenthesis of the UI
+        downloadButton("download_excel", "Download Excel report")
       )
     )
   )
@@ -388,6 +394,50 @@ server <- function(input, output, session) {
         rownames = FALSE
       )
   })
+  
+  output$download_excel <- downloadHandler(
+    filename = function() {
+      paste0("dashboard_report_", Sys.Date(), ".xlsx")
+    },
+    content = function(file) {
+      export_tbl <- filtered_data()
+      
+      quarter_summary <- export_tbl %>%
+        group_by(quarter) %>%
+        summarise(
+          claim_count = sum(claim_count, na.rm = TRUE),
+          claim_amount = sum(claim_amount, na.rm = TRUE),
+          premium = sum(premium, na.rm = TRUE),
+          avg_severity = ifelse(
+            sum(claim_count, na.rm = TRUE) > 0,
+            sum(claim_amount, na.rm = TRUE) / sum(claim_count, na.rm = TRUE),
+            NA_real_
+          ),
+          loss_ratio = ifelse(
+            sum(premium, na.rm = TRUE) > 0,
+            sum(claim_amount, na.rm = TRUE) / sum(premium, na.rm = TRUE),
+            NA_real_
+          ),
+          .groups = "drop"
+        )
+      
+      wb <- createWorkbook()
+      
+      addWorksheet(wb, "filtered_data")
+      addWorksheet(wb, "quarter_summary")
+      
+      writeData(wb, "filtered_data", export_tbl, withFilter = TRUE)
+      writeData(wb, "quarter_summary", quarter_summary, withFilter = TRUE)
+      
+      freezePane(wb, "filtered_data", firstRow = TRUE)
+      freezePane(wb, "quarter_summary", firstRow = TRUE)
+      
+      setColWidths(wb, "filtered_data", cols = 1:ncol(export_tbl), widths = "auto")
+      setColWidths(wb, "quarter_summary", cols = 1:ncol(quarter_summary), widths = "auto")
+      
+      saveWorkbook(wb, file, overwrite = TRUE)
+    }
+  )
 }
 
 # shinyApp(ui = ui, server = server)

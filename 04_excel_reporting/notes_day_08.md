@@ -23,6 +23,9 @@ createStyle()
 addStyle()
 
 
+Whenever you create an R object, create it in a project-level data folder
 
+The data should always be in a project-level data folder for easier access
 
-
+Do not save it under another folder because that makes the R object and/or 
+data retrieval more difficult
