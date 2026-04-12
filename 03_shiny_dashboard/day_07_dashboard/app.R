@@ -99,7 +99,12 @@ ui <- fluidPage(
         label = "Reporting Quarter",
         choices = c("All", sort(unique(app_data$quarter))),
         selected = "All"
-      )
+      ),
+      # this comma is important because we're making multiple UI elements
+      # because the download button comes after
+      
+      # download button must be inside the UI, so before the final closing parenthesis of the UI
+      downloadButton("download_excel", "Download Excel report")
     ),
     
     mainPanel(
@@ -160,11 +165,7 @@ ui <- fluidPage(
         tabPanel(
           "Detailed Results",
           DTOutput("detail_table")
-        ), # this comma is important because we're making multiple UI elements
-                                    # because the download button comes after
-        
-        # download button must be inside the UI, so before the final closing parenthesis of the UI
-        downloadButton("download_excel", "Download Excel report")
+        ) 
       )
     )
   )
@@ -406,19 +407,21 @@ server <- function(input, output, session) {
         group_by(quarter) %>%
         summarise(
           claim_count = sum(claim_count, na.rm = TRUE),
-          claim_amount = sum(claim_amount, na.rm = TRUE),
-          premium = sum(premium, na.rm = TRUE),
-          avg_severity = ifelse(
-            sum(claim_count, na.rm = TRUE) > 0,
-            sum(claim_amount, na.rm = TRUE) / sum(claim_count, na.rm = TRUE),
-            NA_real_
-          ),
-          loss_ratio = ifelse(
-            sum(premium, na.rm = TRUE) > 0,
-            sum(claim_amount, na.rm = TRUE) / sum(premium, na.rm = TRUE),
-            NA_real_
-          ),
+          total_claim_amount = sum(total_claim_amount, na.rm = TRUE),
+          total_premium = sum(total_premium, na.rm = TRUE),
           .groups = "drop"
+        ) %>%
+        mutate(
+          avg_severity = if_else(
+            claim_count > 0,
+            total_claim_amount / claim_count,
+            NA_real_
+          ),
+          loss_ratio = if_else(
+            total_premium > 0,
+            total_claim_amount / total_premium,
+            NA_real_
+          )
         )
       
       wb <- createWorkbook()

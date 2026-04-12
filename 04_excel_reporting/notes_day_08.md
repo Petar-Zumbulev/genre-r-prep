@@ -29,3 +29,46 @@ The data should always be in a project-level data folder for easier access
 
 Do not save it under another folder because that makes the R object and/or 
 data retrieval more difficult
+
+
+# Day 8 — Excel integration and export-ready reporting
+
+## Main idea
+Today I learned how to turn R analysis into business-ready Excel output.
+
+## Why this matters
+In real work, analysis is often not finished when the table looks good in R.
+It is finished when someone else can open the file, read it, filter it, and use it.
+
+## Main packages
+- `readxl`: read Excel files into R
+- `openxlsx`: write polished Excel files from R
+
+## Main functions
+- `read_excel()`
+- `createWorkbook()`
+- `addWorksheet()`
+- `writeData()`
+- `saveWorkbook()`
+- `setColWidths()`
+- `freezePane()`
+- `createStyle()`
+- `addStyle()`
+
+## Shiny concept
+`downloadHandler()` is Shiny’s file export mechanism.
+It defines the file name and how the file is created when the user clicks download.
+
+## Business logic reminder
+Do not average averages.
+Recompute summary metrics from totals.
+
+Examples:
+- average severity = total claim amount / total claim count
+- loss ratio = total claim amount / total premium
+
+## Day 8 outcome
+I can now:
+- export multi-sheet Excel workbooks from R
+- create business-friendly summary tables
+- connect Shiny outputs to downloadable Excel files
