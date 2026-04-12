@@ -139,9 +139,20 @@ So rolling up is really about matching the data structure to the business questi
 # directory for R is the root of the project, I can just use the 
 # directory below to save my .rds file
 
+# ---------------------------------
+# SAVE THE PREPARED DASHBOARD DATA
+# TO A PROJECT-LEVEL DATA FOLDER
+# ---------------------------------
+
+# Create the project-level data folder if it does not exist yet
+if (!dir.exists(file.path("data"))) {
+  dir.create(file.path("data"), recursive = TRUE)
+}
+
+# Save the prepared dashboard object in the shared project-level data folder
 saveRDS(
   dashboard_metrics,
-  "03_shiny_dashboard/day_07_dashboard/data/dashboard_metrics.rds"
+  file.path("data", "dashboard_metrics.rds")
 )
 
 
