@@ -1,5 +1,3 @@
-# 04_excel_reporting/drills_day8.R
-
 library(dplyr)
 library(openxlsx)
 
@@ -14,8 +12,12 @@ library(openxlsx)
 # replace "claim_amount" everywhere below.
 # --------------------------------------------------
 
+# fetching/loading the dataframe dashboard_metrics.rds which is saved as an R object
+# this dataframe was created by another script
+dashboard_metrics <- readRDS(file.path("data", "dashboard_metrics.rds"))
+
 # Optional safety check
-required_cols <- c("quarter", "line", "claim_count", "claim_amount", "premium")
+required_cols <- c("quarter", "line", "claim_count", "total_claim_amount", "total_premium")
 
 missing_cols <- setdiff(required_cols, names(dashboard_metrics))
 
@@ -40,16 +42,16 @@ quarter_summary <- dashboard_metrics %>%
   group_by(quarter) %>%
   summarise(
     claim_count = sum(claim_count, na.rm = TRUE),
-    claim_amount = sum(claim_amount, na.rm = TRUE),
-    premium = sum(premium, na.rm = TRUE),
+    claim_amount = sum(total_claim_amount, na.rm = TRUE),
+    premium = sum(total_premium, na.rm = TRUE),
     avg_severity = ifelse(
       sum(claim_count, na.rm = TRUE) > 0,
-      sum(claim_amount, na.rm = TRUE) / sum(claim_count, na.rm = TRUE),
+      sum(total_claim_amount, na.rm = TRUE) / sum(claim_count, na.rm = TRUE),
       NA_real_
     ),
     loss_ratio = ifelse(
-      sum(premium, na.rm = TRUE) > 0,
-      sum(claim_amount, na.rm = TRUE) / sum(premium, na.rm = TRUE),
+      sum(total_premium, na.rm = TRUE) > 0,
+      sum(total_claim_amount, na.rm = TRUE) / sum(total_premium, na.rm = TRUE),
       NA_real_
     ),
     .groups = "drop"
@@ -59,16 +61,16 @@ line_summary <- dashboard_metrics %>%
   group_by(line) %>%
   summarise(
     claim_count = sum(claim_count, na.rm = TRUE),
-    claim_amount = sum(claim_amount, na.rm = TRUE),
-    premium = sum(premium, na.rm = TRUE),
+    claim_amount = sum(total_claim_amount, na.rm = TRUE),
+    premium = sum(total_premium, na.rm = TRUE),
     avg_severity = ifelse(
       sum(claim_count, na.rm = TRUE) > 0,
-      sum(claim_amount, na.rm = TRUE) / sum(claim_count, na.rm = TRUE),
+      sum(total_claim_amount, na.rm = TRUE) / sum(claim_count, na.rm = TRUE),
       NA_real_
     ),
     loss_ratio = ifelse(
-      sum(premium, na.rm = TRUE) > 0,
-      sum(claim_amount, na.rm = TRUE) / sum(premium, na.rm = TRUE),
+      sum(total_premium, na.rm = TRUE) > 0,
+      sum(total_claim_amount, na.rm = TRUE) / sum(total_premium, na.rm = TRUE),
       NA_real_
     ),
     .groups = "drop"
@@ -80,12 +82,12 @@ line_summary <- dashboard_metrics %>%
 # --------------------------------------------------
 
 definitions_tbl <- data.frame(
-  metric = c("claim_count", "claim_amount", "avg_severity", "loss_ratio"),
+  metric = c("claim_count", "total_claim_amount", "avg_severity", "loss_ratio"),
   definition = c(
     "Total number of claims",
     "Total claim cost / claim amount",
-    "Average cost per claim = claim_amount / claim_count",
-    "Loss ratio = claim_amount / premium"
+    "Average cost per claim = total_claim_amount / claim_count",
+    "Loss ratio = total_claim_amount / premium"
   ),
   stringsAsFactors = FALSE
 )
@@ -223,3 +225,7 @@ output_file <- file.path(
 saveWorkbook(wb, file = output_file, overwrite = TRUE)
 
 cat("Workbook saved to:", output_file, "\n")
+
+
+
+

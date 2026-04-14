@@ -83,3 +83,37 @@ day_08_excel_reporting.R creates an excel workbook using aggregate data and a ta
 app.R now includes a download button in the UI section and a download handler in the
 server section and with these two functions the app now has a download button that
 gives you an excel workbook, using the logic we built in day_08_excel_reporting.R
+
+
+
+
+summarize data = calculate totals, averages, counts, ratios
+
+organize it into useful tables = decide what each row should represent so the 
+result is useful for reporting, dashboards, or Excel
+
+
+Summarize data
+
+You take many raw rows and compute metrics from them.
+
+Organize into useful tables
+
+You decide how to structure the result so a human can use it easily.
+
+
+summarizing is the calculation step
+organizing is the reporting structure step
+
+
+
+
+
+
+
+
+
+
+
+
+
