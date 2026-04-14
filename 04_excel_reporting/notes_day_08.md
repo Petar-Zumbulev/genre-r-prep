@@ -72,3 +72,14 @@ I can now:
 - export multi-sheet Excel workbooks from R
 - create business-friendly summary tables
 - connect Shiny outputs to downloadable Excel files
+
+
+
+
+## My 2 Files
+
+day_08_excel_reporting.R creates an excel workbook using aggregate data and a table
+
+app.R now includes a download button in the UI section and a download handler in the
+server section and with these two functions the app now has a download button that
+gives you an excel workbook, using the logic we built in day_08_excel_reporting.R

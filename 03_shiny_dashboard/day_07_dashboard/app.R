@@ -232,7 +232,8 @@ server <- function(input, output, session) {
           total_claim_amount / total_premium,
           NA_real_
         )
-      )
+      ) %>%
+      arrange(quarter)
   })
   
   detail_data <- reactive({
