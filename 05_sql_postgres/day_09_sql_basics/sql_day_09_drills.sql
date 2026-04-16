@@ -1,6 +1,17 @@
 -- Day 9 SQL drills
 -- Insurance-style practice
-
+# ---------------------------------------
+# right now these SQL commands are mostly for learning and reading, not for 
+# actual execution.
+# Because at the moment you do not have:
+# a real database
+# real tables like policies, claims, premium_transactions
+# a SQL engine connected to them
+#
+# So if you just have a .sql file sitting in your repo, nothing meaningful 
+# happens by itself. The Day 9 plan was to learn SELECT, WHERE, GROUP BY, 
+# ORDER BY, joins, and granularity
+#---------------------------------------
 -- 1. Select all policies
 SELECT *
 FROM policies;

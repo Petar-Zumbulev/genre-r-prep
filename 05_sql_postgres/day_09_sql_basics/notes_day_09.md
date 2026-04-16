@@ -22,6 +22,32 @@ I just dont understand why we need SQL for things like choosing columns,
 filtering rows, grouping, summaries, etc. when we just learned how to do 
 all of this in R, with the summarize() group() mutate() functions
 
+- SQL and R do overlapping things, but in different places for different reasons
+- R works on data you already have in memory
+- SQL works on data that still lives inside a database
+- Use SQL when you need to ask the database for data
+- Use R when you want to analyze, clean, visualize, report, and app-build with the data after that
+
+- Why not just do everything in R?
+- Because in many real jobs, the data is not sitting as a neat CSV on your laptop
+- It is often: 
+  inside a database
+  very large
+  split across multiple tables
+  
+- So instead of doing this:
+
+pull 20 million rows into R
+then filter to what you actually need
+
+you do this:
+
+use SQL to ask for only the needed rows/columns
+bring the smaller result into R
+continue in R
+
+
+
 ## Most important concept
 Granularity = what one row represents.
 
@@ -33,6 +59,7 @@ Examples:
 
 Before I join tables, I should always ask:
 What does one row represent in each table?
+Meaning, do the granularities match?
 
 ## Key SQL commands
 - SELECT = choose columns
@@ -66,3 +93,7 @@ A common workflow is:
 - why joins can duplicate rows
 - how to compute claim count and severity in SQL
 - how R connects to a SQL database conceptually
+
+
+
+
