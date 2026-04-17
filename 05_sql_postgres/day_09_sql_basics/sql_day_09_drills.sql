@@ -93,29 +93,40 @@ GROUP BY p.line
 ORDER BY total_premium DESC;
 
 -- 12. Bad join example: may duplicate rows
+# 
+# The problem here is granularity
+# if you join two “many rows per policy” tables at the same time, 
+# you can accidentally multiply rows
+#
+# joining the two tables is not safe because it multiplies rows
+# due to different granularities
+# 
 SELECT
     p.line,
     SUM(c.claim_amount) AS total_claims,
     SUM(pt.premium_amount) AS total_premium
 FROM policies p
 LEFT JOIN claims c
-    ON p.policy_id = c.policy_id
-LEFT JOIN premium_transactions pt
-    ON p.policy_id = pt.policy_id
+    ON p.policy_id = c.policy_id -- here's the problem, we join policies which has
+LEFT JOIN premium_transactions pt -- one row per policy with claims which has
+    ON p.policy_id = pt.policy_id -- many rows per policy!
 GROUP BY p.line;
 
 -- 13. Better version: aggregate first, then join
+# 
+# now we took care of the granularity because of the aggregation
+#
 WITH claim_totals AS (
     SELECT
         policy_id,
-        SUM(claim_amount) AS total_claims
+        SUM(claim_amount) AS total_claims -- aggregation part
     FROM claims
     GROUP BY policy_id
 ),
 premium_totals AS (
     SELECT
         policy_id,
-        SUM(premium_amount) AS total_premium
+        SUM(premium_amount) AS total_premium -- aggregation part
     FROM premium_transactions
     GROUP BY policy_id
 )
@@ -125,7 +136,10 @@ SELECT
     SUM(pt.total_premium) AS total_premium
 FROM policies p
 LEFT JOIN claim_totals ct
-    ON p.policy_id = ct.policy_id
+    ON p.policy_id = ct.policy_id -- now we're joining tables that have aggregated values
 LEFT JOIN premium_totals pt
     ON p.policy_id = pt.policy_id
 GROUP BY p.line;
+
+# now we joined summarized tables, and multiplication of rows didnt occur
+
