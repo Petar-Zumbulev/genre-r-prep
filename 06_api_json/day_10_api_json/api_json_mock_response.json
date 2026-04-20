@@ -1,0 +1,34 @@
+{
+  "report_date": "2026-03-24",
+  "portfolio": "Medical Claims",
+  "records": [
+    {
+      "claim_id": 1001,
+      "region": "North",
+      "claim_amount": 1200,
+      "inflation_index": 1.03,
+      "status": "Open"
+    },
+    {
+      "claim_id": 1002,
+      "region": "South",
+      "claim_amount": 2400,
+      "inflation_index": 1.05,
+      "status": "Closed"
+    },
+    {
+      "claim_id": 1003,
+      "region": "North",
+      "claim_amount": 1800,
+      "inflation_index": 1.04,
+      "status": "Closed"
+    },
+    {
+      "claim_id": 1004,
+      "region": "West",
+      "claim_amount": 3200,
+      "inflation_index": 1.06,
+      "status": "Open"
+    }
+  ]
+}
