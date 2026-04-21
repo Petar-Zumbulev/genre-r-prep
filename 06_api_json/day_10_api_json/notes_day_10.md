@@ -48,6 +48,15 @@ the useful table is buried inside a nested object called records
 
 
 
+API workflow in R:
+
+1. get the response
+2. inspect the structure
+3. extract the useful nested part
+4. convert it to a tibble
+5. clean and enrich it
+6. summarise it for reporting
+7. export the result
 
 
 
