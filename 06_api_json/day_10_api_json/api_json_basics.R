@@ -15,9 +15,11 @@ library(readr)
 json_data <- fromJSON("06_api_json/day_10_api_json/api_json_mock_response.json")
 
 # 2. Inspect the object
+# do not guess the structure blindly — inspect first, then extract
 str(json_data)
 
 # 3. Pull out the nested records table
+# as_tibble() turns the data into a tidy table
 claims_tbl <- as_tibble(json_data$records)
 
 # 4. Add top-level metadata if useful
@@ -28,12 +30,15 @@ claims_tbl <- claims_tbl %>%
   )
 
 # 5. Create an inflation-adjusted amount
+# mutate() to add columns
 claims_tbl <- claims_tbl %>%
   mutate(
     adjusted_claim_amount = claim_amount * inflation_index
   )
 
 # 6. Build a simple reporting table
+# group_by() and summarise() are the most important for summaries
+# group by groups and summarise decides which columns we include
 summary_tbl <- claims_tbl %>%
   group_by(region, status) %>%
   summarise(

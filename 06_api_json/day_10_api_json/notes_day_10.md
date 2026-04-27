@@ -59,6 +59,24 @@ API workflow in R:
 7. export the result
 
 
+API workflow in R:
+
+1. get the response
+2. inspect the structure
+3. extract the useful nested part
+4. convert it to a tibble
+5. clean and enrich it
+6. summarise it for reporting
+7. export the result
+
+
+practical job workflow:
+
+receive messy input
+understand structure
+isolate the useful level
+create a clean table
+produce a report-ready output
 
 
 
