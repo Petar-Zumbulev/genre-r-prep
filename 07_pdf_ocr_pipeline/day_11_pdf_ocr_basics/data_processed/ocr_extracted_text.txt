@@ -1,0 +1,9 @@
+SCANNED CLAIM NOTE
+Claim ID: CLM007
+
+Policy ID: POL1007
+
+Paid Amount: 1980.00
+
+Line: Health
+

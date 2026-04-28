@@ -1,0 +1,29 @@
+GEN RE SAMPLE CLAIMS STATEMENT
+
+Reporting period: Q1 2025
+
+
+
+This document contains sample claim records for training purposes.
+
+
+
+
+CLAIM_ID | POLICY_ID | ACCIDENT_DATE | LINE | PAID_AMOUNT
+
+CLM001 | POL1001 | 2025−01−14 | Health | 1250.00
+
+CLM002 | POL1002 | 2025−01−22 | Motor      | 850.00
+
+CLM003 | POL1003 | 2025−02−03 | Property | 2300.00
+
+CLM004 | POL1004 | 2025−02−18 | Health | 1750.00
+
+CLM005 | POL1005 | 2025−03−05 | Motor      | 620.00
+
+CLM006 | POL1006 | 2025−03−21 | Property | 3100.00
+
+
+
+End of report.
+
