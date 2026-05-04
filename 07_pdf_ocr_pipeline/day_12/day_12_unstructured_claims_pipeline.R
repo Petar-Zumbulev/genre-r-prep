@@ -53,7 +53,13 @@ raw_claim_lines <- c(
   "2024-06-15 | Claim C011 | Line: Motor | Region: North | Amount: -200.00 | Status: Paid",
   "2024-07-01 | Claim C012 | Line: Health | Region: South | Amount: missing | Status: Paid",
   "BAD LINE WITHOUT THE EXPECTED STRUCTURE",
-  "2024-07-22 | Claim C014 | Line: Motor | Region: West | Amount: 1550.00 | Status: Unknown"
+  "2024-07-22 | Claim C014 | Line: Motor | Region: West | Amount: 1550.00 | Status: Unknown",
+  
+  # Drill 1 Rows:
+  # As expected, claim c016 is not valid because it does not have a status
+  # this is good, our validation function works as it should
+  "2024-08-10 | Claim C015 | Line: Travel | Region: East | Amount: 640.00 | Status: Paid",
+  "2024-08-18 | Claim C016 | Line: Health | Region: West | Amount: 720.00"
 )
 
 
@@ -156,6 +162,7 @@ add_premium_logic <- function(kpi_tbl) {
         business_line == "Health" ~ 4000,
         business_line == "Motor" ~ 5000,
         business_line == "Property" ~ 8000,
+        business_line == "Travel" ~ 3500, # If the business line is Travel, assign a base premium of 3500.
         TRUE ~ 3000
       ),
       premium = base_premium + claim_count * 250,

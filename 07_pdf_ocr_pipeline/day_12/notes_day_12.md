@@ -262,4 +262,7 @@ inflation adjustment = claim cost after price increases
 These are simple formulas, but they are very important for insurance reporting and pricing logic.
 
 
+## Business Logic:
+You do not just write code once, you keep adding business rules, checks, and reporting outputs
+
 
