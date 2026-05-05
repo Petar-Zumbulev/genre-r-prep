@@ -40,6 +40,45 @@ Is severity really increasing,
 or is this just one noisy month?
 
 
+## Linear trend
+
+A linear model says:
+
+severity = starting level + monthly change
+
+Example interpretation:
+
+Severity increases by about €75 per month.
+
+
+
+
+## Log trend
+
+A log model says:
+
+log(severity) = starting level + trend over time
+
+This is useful because insurance costs often grow by percentages.
+
+Example interpretation:
+
+Severity is increasing by about 1.2% per month.
+
+This is usually more realistic than saying the increase is always the same euro amount.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
