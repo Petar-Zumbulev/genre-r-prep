@@ -124,21 +124,21 @@ trend_tbl <- trend_tbl %>%
       .x = severity,
       .f = mean,
       .before = 2,
-      .complete = TRUE
+      .complete = TRUE # R only calculates the value if it has all 3 months available
     ),
     
     severity_ma_6 = slide_dbl(
       .x = severity,
       .f = mean,
       .before = 5,
-      .complete = TRUE
+      .complete = TRUE # R only calculates the value if it has all 3 months available
     ),
     
     severity_adj_ma_3 = slide_dbl(
       .x = severity_inflation_adjusted,
       .f = mean,
       .before = 2,
-      .complete = TRUE
+      .complete = TRUE # R only calculates the value if it has all 3 months available
     )
   )
 
@@ -156,6 +156,7 @@ linear_model <- lm(
 
 linear_summary <- summary(linear_model)
 
+# severity increases by about 45 Euro per month, ceteris paribus
 linear_monthly_change <- coef(linear_model)[["month_index"]]
 
 
@@ -167,6 +168,8 @@ linear_monthly_change <- coef(linear_model)[["month_index"]]
 #
 # We use log(severity), because percentage growth is easier to interpret
 # with a log model.
+#
+# For insurance trend work because we usually care about percentage growth
 
 log_model <- lm(
   log(severity) ~ month_index,
@@ -181,6 +184,8 @@ log_annual_growth <- exp(12 * coef(log_model)[["month_index"]]) - 1
 # 8. Add model predictions to the table
 # ----------------------------
 
+# very interesting, adding predictions, forecasts based on our linear or log model
+# so this is why we build the models
 trend_tbl <- trend_tbl %>%
   mutate(
     severity_linear_pred = predict(linear_model, newdata = trend_tbl),
@@ -196,6 +201,9 @@ trend_tbl <- trend_tbl %>%
 # We recompute severity from totals:
 #
 # total claims / total claim count
+#
+# Do not average averages.
+# Recalculate the metric from the underlying totals.
 
 quarterly_summary <- trend_tbl %>%
   group_by(year_quarter) %>%
@@ -207,6 +215,7 @@ quarterly_summary <- trend_tbl %>%
     severity = total_claim_amount / total_claim_count,
     loss_ratio = total_claim_amount / total_premium,
     
+    # removes the hidden grouping memory
     .groups = "drop"
   )
 
@@ -261,7 +270,12 @@ severity_trend_plot <- ggplot(trend_tbl, aes(x = accident_month)) +
     y = "Average severity",
     caption = "Synthetic insurance data for R practice"
   ) +
-  scale_y_continuous(labels = scales::label_euro()) +
+  scale_y_continuous(
+    labels = scales::label_number(
+      prefix = "€",
+      big.mark = ","
+    )
+  ) +
   theme_minimal()
 
 print(severity_trend_plot)
@@ -331,3 +345,4 @@ cat(
 cat("\nFiles created:\n")
 cat("- outputs/day_13_severity_trend_plot.png\n")
 cat("- outputs/day_13_trend_summary.xlsx\n")
+
