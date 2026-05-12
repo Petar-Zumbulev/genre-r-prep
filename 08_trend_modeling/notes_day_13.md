@@ -128,15 +128,74 @@ That looks like a 10% increase.
 But if inflation was also 10%, then maybe claims are not really becoming worse. 
 They are just following inflation.
 
+So inflation-adjusted severity helps answer:
+
+Is the portfolio actually getting worse,
+or are costs just rising because of inflation?
+
+
+Raw severity answers:
+
+How expensive are claims in current money?
+
+Inflation-adjusted severity answers:
+
+How expensive are claims after removing inflation effects?
+
+^^ this is an important distinction
 
 
 
 
+Drill 4 — Premium per claim vs severity
 
+What this means:
 
+Create:
 
+premium_per_claim = premium_amount / claim_count
 
+This tells you:
 
+How much premium is available per claim on average?
+
+Then compare it to:
+
+severity = claim_amount / claim_count
+
+Severity tells you:
+
+How much each claim costs on average.
+
+So now you compare:
+
+premium per claim vs average claim cost
+Why this is relevant
+
+This is very insurance-business relevant.
+
+If severity rises faster than premium per claim, the insurer may have a problem.
+
+Example:
+
+Average claim cost:     €4,000
+Premium per claim:      €3,500
+
+That means claims are more expensive than the premium available per claim.
+
+This connects directly to:
+
+pricing
+loss ratio
+premium adequacy
+portfolio monitoring
+What you should remember
+
+The core business question is:
+
+Are premiums keeping up with claims?
+
+If not, the loss ratio gets worse.
 
 
 

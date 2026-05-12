@@ -195,6 +195,28 @@ log_annual_growth <- exp(12 * coef(log_model)[["month_index"]]) - 1
 
 
 # ----------------------------
+# Drill 3: Inflation-adjusted severity trend model
+# ----------------------------
+# This asks:
+# "After removing inflation, is severity still increasing?"
+
+inflation_adjusted_log_model <- lm(
+  log(severity_inflation_adjusted) ~ month_index,
+  data = trend_tbl
+)
+
+inflation_adjusted_monthly_growth <- exp(
+  coef(inflation_adjusted_log_model)[["month_index"]]
+) - 1
+
+inflation_adjusted_annual_growth <- exp(
+  12 * coef(inflation_adjusted_log_model)[["month_index"]]
+) - 1
+
+
+
+
+# ----------------------------
 # 8. Add model predictions to the table
 # ----------------------------
 
@@ -203,7 +225,10 @@ log_annual_growth <- exp(12 * coef(log_model)[["month_index"]]) - 1
 trend_tbl <- trend_tbl %>%
   mutate(
     severity_linear_pred = predict(linear_model, newdata = trend_tbl),
-    severity_log_pred = exp(predict(log_model, newdata = trend_tbl))
+    severity_log_pred = exp(predict(log_model, newdata = trend_tbl)),
+    severity_adj_log_pred = exp(
+      predict(inflation_adjusted_log_model, newdata = trend_tbl)
+    )
   )
 
 
@@ -356,6 +381,32 @@ cat(
 cat(
   "Annualized severity growth is about ",
   round(log_annual_growth * 100, 2),
+  "% per year.\n",
+  sep = ""
+)
+
+# Drill #3:
+#
+# If growth > 0:
+#  Claim severity is still increasing after inflation.
+#
+# If growth ≈ 0:
+#  Most of the severity increase may be explained by inflation.
+#
+# If growth < 0:
+#  Inflation-adjusted claim severity is decreasing.
+
+cat("\nInflation-adjusted severity trend:\n")
+cat(
+  "After adjusting for inflation, severity grows by about ",
+  round(inflation_adjusted_monthly_growth * 100, 2),
+  "% per month.\n",
+  sep = ""
+)
+
+cat(
+  "Annualized inflation-adjusted severity growth is about ",
+  round(inflation_adjusted_annual_growth * 100, 2),
   "% per year.\n",
   sep = ""
 )
