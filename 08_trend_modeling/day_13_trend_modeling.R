@@ -117,6 +117,11 @@ trend_tbl <- monthly_claims %>%
 # .before = 2 means:
 # current month + 2 months before = 3-month moving average
 
+
+# Drill #1 was done here on line 131
+# I changed it to .before = 3 to make a moving average of 
+# 4 months and the line became smoother, because each point uses
+# more months
 trend_tbl <- trend_tbl %>%
   arrange(accident_month) %>%
   mutate(
@@ -139,6 +144,15 @@ trend_tbl <- trend_tbl %>%
       .f = mean,
       .before = 2,
       .complete = TRUE # R only calculates the value if it has all 3 months available
+    ),
+    
+    # Drill #2 is right here, added this 12 month moving average and also 
+    # added it to the plot
+    severity_ma_12 = slide_dbl(
+      .x = severity,
+      .f = mean,
+      .before = 11,
+      .complete = TRUE
     )
   )
 
@@ -263,6 +277,10 @@ severity_trend_plot <- ggplot(trend_tbl, aes(x = accident_month)) +
   geom_line(aes(y = severity), linewidth = 0.7, alpha = 0.5) +
   geom_line(aes(y = severity_ma_3), linewidth = 1) +
   geom_line(aes(y = severity_log_pred), linewidth = 1, linetype = "dashed") +
+  
+  # Drill #2 addition to the plot
+  # The 12-month moving average is much smoother because it uses a full year of data.
+  geom_line(aes(y = severity_ma_12), linewidth = 2) +
   labs(
     title = "Monthly Claim Severity Trend",
     subtitle = "Raw severity, 3-month moving average, and log trend model",

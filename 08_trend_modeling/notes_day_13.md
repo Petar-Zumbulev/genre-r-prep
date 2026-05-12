@@ -103,3 +103,41 @@ pattern with moving averages, fitted both a linear and log trend model,
 and exported the results to Excel. The main business idea is to separate
 random claim volatility from the underlying cost trend, which is
 important for reporting, premium logic, and inflation discussions.
+
+
+
+We already calculated:
+
+severity = claim_amount / claim_count
+
+But raw severity can increase for two reasons:
+
+1. Claims are becoming truly more expensive.
+2. General inflation / medical inflation is pushing all costs upward.
+
+So Drill 3 asks:
+
+After adjusting for inflation, are claim costs still increasing?
+
+Imagine severity goes from:
+
+€3,000 → €3,300
+
+That looks like a 10% increase.
+
+But if inflation was also 10%, then maybe claims are not really becoming worse. 
+They are just following inflation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
